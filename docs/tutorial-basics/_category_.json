@@ -1,0 +1,8 @@
+{
+  "label": "Development Tooling",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "Tools and configurations to get up and developing asap"
+  }
+}
