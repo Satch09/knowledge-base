@@ -2,13 +2,11 @@
 sidebar_position: 2
 ---
 
-# Create a Document
+# Keyboard centric VScode
 
-Documents are **groups of pages** connected through:
+Exchange 'click-click' with 'click-clack'
 
-- a **sidebar**
-- **previous/next navigation**
-- **versioning**
+I've come across many ways of using Vim within Vscode but they seem to rely on a deeper understanding of Vim and a lot of muscle memory and which also rules out a lot of Vscode functionality in favour of Vim's. This is great and all but I feel like there needs to be an interface between the two... and this is where Vspace Code comes in and integrates them together nicely.
 
 ## Create your first Doc
 
@@ -30,7 +28,7 @@ Add metadata to customize the sidebar label and position:
 
 ```md title="docs/hello.md" {1-4}
 ---
-sidebar_label: 'Hi!'
+sidebar_label: "Hi!"
 sidebar_position: 3
 ---
 
@@ -44,13 +42,13 @@ It is also possible to create your sidebar explicitly in `sidebars.js`:
 ```js title="sidebars.js"
 module.exports = {
   tutorialSidebar: [
-    'intro',
+    "intro",
     // highlight-next-line
-    'hello',
+    "hello",
     {
-      type: 'category',
-      label: 'Tutorial',
-      items: ['tutorial-basics/create-a-document'],
+      type: "category",
+      label: "Tutorial",
+      items: ["tutorial-basics/create-a-document"],
     },
   ],
 };

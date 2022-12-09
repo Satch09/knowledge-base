@@ -44,7 +44,7 @@ docker run -p <host_port>:<container_port> <image_name>
 
 #### Anonymous Volumes
 
-Storage location created and managed by Docker located somewhere on your machine with a pregenerated folder name. This is a temporary storage (tmpfs) mechanism for data storage but will only be removed if a container is run with --rm flag, otherwise it hangs around and a new anonymous volume will be created when the container is run again. I guess this is so that you have the opportunity to inspect these volumes between container development iterations. Useful for when tuning your container configuration or for files which are not required after the container is removed such as logfiles related to the container itself or for dependencies specific to the container only such as npm packages.
+Storage location created and managed by Docker located somewhere on your machine with a pregenerated folder name. This is a temporary storage mechanism for data storage but will only be removed if a container is run with --rm flag, otherwise it hangs around and a new anonymous volume will be created when the container is run again. I guess this is so that you have the opportunity to inspect these volumes between container development iterations. Useful for when tuning your container configuration or for files which are not required after the container is removed such as logfiles related to the container itself or for dependencies specific to the container only such as npm packages.
 
 ```sh
 docker run -name container-name -v /app/anon-volume image
@@ -58,6 +58,10 @@ Storage managed by Docker but who's life cycle is not linked to containers and w
 docker run -name container-name -v vol-name:/app/container/volume image
 ```
 
+:::tip External Volumes
+Volumes can be located on remote locations such as S3 etc.
+:::
+
 #### Bind Mounts
 
 Whenever source files, which are initially copied into an image at build time, are changed, the image must be rebuilt in order for those changes to see them. Bind mounts, as the name suggests, map an _absolute_ folder location into a container such that changes to the local fs are immediately reflected in the container. Useful for project sourcefiles which exist on local fs but requires dependencies etc. in order to function but which reside in a container only. This allows one to work on multiple projects which share the same container such as Python setup for data datascience like Pandas and Numpy.
@@ -66,7 +70,9 @@ Whenever source files, which are initially copied into an image at build time, a
 docker run -name container-name -v /absolute/path/to/bound/folder:/app/container/bound/volume image
 ```
 
-💡 Notice the length of the various mounting options, the longest path (on the container side) is the bind mount with the shortest being anonymous volumes. With docker, the most specific path name takes precedence. This means that even if an application folder is a bindmount, if a named volume is specified in a subfolder of that volume, the named volume shall not be overwritten and the same goes for bindmounts; which is what one would want in practice.
+:::info
+Notice the length of the various mounting options, the longest path (on the container side) is the bind mount with the shortest being anonymous volumes. With docker, the most specific path name takes precedence. This means that even if an application folder is a bindmount, if a named volume is specified in a subfolder of that volume, the named volume shall not be overwritten and the same goes for bindmounts; which is what one would want in practice.
+:::
 
 So for example, the following will create an anonymous volume with a named volume nested inside of it (which won't be overwritten but the anon volume) with a bindmount nested further down (which won't be overwritten by either of the previous volumes).
 
@@ -79,10 +85,6 @@ If you want to be absolutely certain that docker will not overwrite your bindmou
 ```sh
 docker run -d -p 3000:3000 --name docker-app -v named:/app/docker/container -v /absolute/path/to/local/dir:/app/docker/container/path:ro -v /app/docker
 ```
-
-<!-- - `src/pages/index.js` → `localhost:3000/`
-- `src/pages/foo.md` → `localhost:3000/foo`
-- `src/pages/foo/bar.js` → `localhost:3000/foo/bar` -->
 
 ## Anatomy of a Dockerfile
 
@@ -105,16 +107,27 @@ CMD [ "node", "app.js" ]
 
 ```
 
-A new page is now available at [http://localhost:3000/my-react-page](http://localhost:3000/my-react-page).
+```dockerfile title="Dockerfile_from_docker_site"
+# syntax=docker/dockerfile:1
+FROM ubuntu:22.04
 
-## Create your first Markdown Page
+# install app dependencies
+RUN apt-get update && apt-get install -y python3 python3-pip
+RUN pip install flask==2.1.*
 
-Create a file at `src/pages/my-markdown-page.md`:
+# install app
+COPY hello.py /
 
-```mdx title="src/pages/my-markdown-page.md"
-# My Markdown page
-
-This is a Markdown page
+# final configuration
+ENV FLASK_APP=hello
+EXPOSE 8000
+CMD flask run --host 0.0.0.0 --port 8000
 ```
 
-A new page is now available at [http://localhost:3000/my-markdown-page](http://localhost:3000/my-markdown-page).
+:::tip Using latest Docker engine
+Using `docker/dockerfile:1`, which always points to the latest release of the version 1 syntax. BuildKit automatically checks for updates of the syntax before building, making sure you are using the most current version.
+:::
+
+#### Order of Dockerfile building operations
+
+Behind the scenes, when building an image bases which have already been built previously but with differences within the Dockerfile, docker will use steps already built because each step is cached and only differences are built again which results in efficient builds.
