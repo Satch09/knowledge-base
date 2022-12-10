@@ -25,11 +25,17 @@ docker exec -it <container_name> sh
 
 Like the standard image concept from virtual machines and can be downloaded from Docker Hub or complied as custom with extended user configuration. This means that you and your time can build your own image based on an offical Postgres image but with preconfigured settings to suit your development needs.
 
+:::tip
+Recommended to always tag images that you build so that if you have multiple test images, you can tell them apart. <image:tag>
+:::
+
 ```sh
-# Recommended to always tag images that you build so that if you have multiple test images, you can tell them apart. <image:tag>
-# If no tag name is specified then "latest" is used as default tag name
 docker build -t tag-name image
 ```
+
+:::note
+If no tag name is specified then "latest" is used as default tag name
+:::
 
 ### Containers
 

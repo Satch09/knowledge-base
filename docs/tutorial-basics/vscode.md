@@ -6,7 +6,7 @@ sidebar_position: 2
 
 Exchange 'click-click' with 'click-clack'
 
-I've come across many ways of using Vim within Vscode but they seem to rely on a deeper understanding of Vim and a lot of muscle memory and which also rules out a lot of Vscode functionality in favour of Vim's. This is great and all but I feel like there needs to be an interface between the two... and this is where Vspace Code comes in and integrates them together nicely.
+I've come across many ways of using Vim within Vscode but they seem to rely on a deeper understanding of Vim and a lot of muscle memory and which also rules out a lot of Vscode functionality in favour of Vim's. This is great and all but I feel like there needs to be an interface between the two that allows one to choose which they would like to use... and this is where VSpace Code comes in and integrates them together nicely.
 
 ## Create your first Doc
 
